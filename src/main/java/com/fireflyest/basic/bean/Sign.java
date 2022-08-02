@@ -4,32 +4,24 @@ package com.fireflyest.basic.bean;
  * @author Fireflyest
  * 2022/1/6 14:26
  */
-public class Home{
-
+public class Sign {
 
     private int id;
-    private String  owner;
-    private String name;
+    private String command;
     private String world;
     private double x;
     private double y;
     private double z;
-    private float pitch;
-    private float yaw;
 
-    public Home() {
+    public Sign() {
     }
 
-    public Home(String owner) {
-        this.owner = owner;
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public Sign(String command, String world, double x, double y, double z) {
+        this.command = command;
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
     }
 
     public int getId() {
@@ -40,12 +32,12 @@ public class Home{
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getCommand() {
+        return command;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCommand(String command) {
+        this.command = command;
     }
 
     public String getWorld() {
@@ -80,19 +72,4 @@ public class Home{
         this.z = z;
     }
 
-    public float getPitch() {
-        return pitch;
-    }
-
-    public void setPitch(float pitch) {
-        this.pitch = pitch;
-    }
-
-    public float getYaw() {
-        return yaw;
-    }
-
-    public void setYaw(float yaw) {
-        this.yaw = yaw;
-    }
 }

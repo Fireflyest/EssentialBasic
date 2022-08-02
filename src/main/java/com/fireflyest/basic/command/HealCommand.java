@@ -2,12 +2,15 @@ package com.fireflyest.basic.command;
 
 import com.fireflyest.essential.data.Language;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.NotNull;
 
 public class HealCommand  implements CommandExecutor{
@@ -34,9 +37,20 @@ public class HealCommand  implements CommandExecutor{
 	}
 	
 	private void healPlayer(Player player) {
-		player.setHealth(20);
+		double maxHealth = 20;
+		AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+		if (attribute != null) maxHealth = attribute.getValue();
+		player.setHealth(maxHealth);
 		player.setFoodLevel(20);
 		for(PotionEffect effect: player.getActivePotionEffects()){
+			if (effect.getType() == PotionEffectType.FIRE_RESISTANCE )continue;
+			if (effect.getType() == PotionEffectType.DAMAGE_RESISTANCE )continue;
+			if (effect.getType() == PotionEffectType.JUMP )continue;
+			if (effect.getType() == PotionEffectType.LUCK )continue;
+			if (effect.getType() == PotionEffectType.HERO_OF_THE_VILLAGE )continue;
+			if (effect.getType() == PotionEffectType.REGENERATION )continue;
+			if (effect.getType() == PotionEffectType.SPEED )continue;
+			if (effect.getType() == PotionEffectType.INVISIBILITY )continue;
 			player.removePotionEffect(effect.getType());
 		}
 		player.setFireTicks(0);

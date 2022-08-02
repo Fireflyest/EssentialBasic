@@ -44,7 +44,7 @@ public class Temporary {
     }
 
     public static void putBack(String name, Location loc) {
-        back.put(name, loc);
+        back.put(name, loc.clone());
     }
 
     public static Location getBack(String name) {

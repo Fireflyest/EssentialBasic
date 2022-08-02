@@ -1,6 +1,7 @@
 package com.fireflyest.basic.command;
 
 import com.fireflyest.basic.EssentialBasic;
+import com.fireflyest.basic.data.Temporary;
 import com.fireflyest.essential.bean.Point;
 import com.fireflyest.essential.data.Language;
 import com.fireflyest.essential.util.ConvertUtils;
@@ -37,7 +38,7 @@ public class WarpCommand  implements CommandExecutor{
 						i++;
 					}
 					builder.append("]");
-					sender.sendMessage(Language.TITLE + builder.toString());
+					sender.sendMessage(Language.TITLE + builder);
 				}else if(args.length == 1) {
 					if(player == null) {
 						sender.sendMessage(Language.ONLY_PLAYER_USE);
@@ -55,6 +56,7 @@ public class WarpCommand  implements CommandExecutor{
 						if(! p.getName().equals(args[0])) continue;
 						has = true;
 						Location loc = ConvertUtils.pointToLocation(p);
+						Temporary.putBack(player.getName(), player.getLocation());
 						TeleportUtils.teleportTo(player, loc, player.hasPermission("essential.vip"));
 						player.sendMessage(Language.TELEPORT_POINT.replace("%point%", args[0]));
 						break;

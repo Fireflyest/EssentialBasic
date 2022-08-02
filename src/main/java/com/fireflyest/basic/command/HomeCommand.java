@@ -2,6 +2,7 @@ package com.fireflyest.basic.command;
 
 import com.fireflyest.basic.EssentialBasic;
 import com.fireflyest.basic.bean.Home;
+import com.fireflyest.basic.data.Temporary;
 import com.fireflyest.essential.data.Language;
 import com.fireflyest.essential.util.TeleportUtils;
 import org.bukkit.Bukkit;
@@ -43,13 +44,14 @@ public class HomeCommand  implements CommandExecutor{
 							i++;
 						}
 						builder.append("]");
-						player.sendMessage(Language.TITLE + builder.toString());
+						player.sendMessage(Language.TITLE + builder);
 					}
 				}else if(args.length == 1) {		// home <name>
 					boolean has = false;
 					for(Home h: homes){
 						if(!h.getName().equals(args[0])) continue;
 						has = true;
+						Temporary.putBack(player.getName(), player.getLocation());
 						Location loc = new Location(Bukkit.getWorld(h.getWorld()), h.getX(), h.getY(), h.getZ(), h.getYaw(), h.getPitch());
 						TeleportUtils.teleportTo(player, loc, player.hasPermission("essential.vip"));
 						player.sendMessage(Language.TELEPORT_POINT.replace("%point%", "home("+args[0]+")"));

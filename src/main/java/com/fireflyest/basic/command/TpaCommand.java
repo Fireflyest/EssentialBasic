@@ -33,8 +33,9 @@ public class TpaCommand  implements CommandExecutor{
 				player.sendMessage(Language.TP_APPLY_REFUSE);
 				return true;
 			}
+			// 已经有
 			if(TpaUtils.containsReceiver(target.getUniqueId())) {
-				sender.sendMessage(Language.ALREADY_GAS_TPER.replace("%player%", args[0]));
+				sender.sendMessage(Language.ALREADY_HAS_TPER.replace("%player%", args[0]));
 				return true;
 			}
 			TpaUtils.addTpa(player.getUniqueId(), target.getUniqueId(), false);

@@ -1,5 +1,6 @@
 package com.fireflyest.basic.command;
 
+import com.fireflyest.basic.data.Temporary;
 import com.fireflyest.essential.data.Language;
 import com.fireflyest.essential.util.TeleportUtils;
 import org.bukkit.Location;
@@ -21,6 +22,7 @@ public class TopCommand  implements CommandExecutor{
 				return true;
 			}
 			Location loc = player.getLocation();
+			Temporary.putBack(player.getName(), player.getLocation());
 			loc.setY(loc.getChunk().getChunkSnapshot().getHighestBlockYAt(Math.abs((int)loc.getX()%16), Math.abs((int)loc.getZ()%16))+2.5);
 			TeleportUtils.teleportTo(player, loc, player.hasPermission("essential.vip"));
 		}else sender.sendMessage(Language.TITLE + "正确用法§3" + cmd.getUsage());

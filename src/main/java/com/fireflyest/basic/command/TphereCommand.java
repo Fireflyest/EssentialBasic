@@ -30,7 +30,7 @@ public class TphereCommand  implements CommandExecutor{
 				return true;
 			}
 			if(TpaUtils.containsReceiver(target.getUniqueId())) {
-				sender.sendMessage(Language.ALREADY_GAS_TPER.replace("%player%", args[0]));
+				sender.sendMessage(Language.ALREADY_HAS_TPER.replace("%player%", args[0]));
 				return true;
 			}
 			TpaUtils.addTpa(player.getUniqueId(), target.getUniqueId(), true);

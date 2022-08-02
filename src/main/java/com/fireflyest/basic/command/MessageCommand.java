@@ -13,15 +13,15 @@ public class MessageCommand  implements CommandExecutor{
 	
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, Command cmd, @NotNull String label, String[] args) {
-		if(!cmd.getName().equalsIgnoreCase("m")) return true;
+		if(!cmd.getName().equalsIgnoreCase("message")) return true;
 		if(args.length >= 2) {
-			Player target = Bukkit.getPlayer(args[0]);
+			Player target = Bukkit.getPlayerExact(args[0]);
 			if(target == null) {
 				sender.sendMessage(Language.OFFLINE_PLAYER.replace("%player%", args[0]));
 				return true;
 			}
 			String msg;
-			StringBuilder message = new StringBuilder("");
+			StringBuilder message = new StringBuilder();
 			for(int i = 1 ; i < args.length ; i++) {
 				message.append(" ").append(args[i]);
 			}

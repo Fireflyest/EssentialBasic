@@ -3,6 +3,8 @@ package com.fireflyest.basic.util;
 import java.util.*;
 
 import com.fireflyest.basic.bean.Tpa;
+import com.fireflyest.essential.data.Language;
+
 public class TpaUtils {
 
 	private static final Map<UUID, Tpa> tpas = new HashMap<>();
@@ -20,7 +22,7 @@ public class TpaUtils {
 	}
 	
 	public static boolean containsReceiver(UUID receiver) {
-		return tpas.containsKey(receiver);
+		return tpas.containsKey(receiver) && (tpas.get(receiver).getTime() >= new Date().getTime());
 	}
 	
 	public static Tpa getTpa(UUID receiver) {

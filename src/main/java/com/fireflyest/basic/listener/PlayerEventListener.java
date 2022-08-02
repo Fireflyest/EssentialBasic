@@ -3,23 +3,31 @@ package com.fireflyest.basic.listener;
 import com.fireflyest.basic.EssentialBasic;
 import com.fireflyest.basic.data.Temporary;
 import com.fireflyest.basic.util.DeathMsgUtils;
-import com.fireflyest.essential.api.Data;
+import com.fireflyest.essential.data.Config;
 import com.fireflyest.essential.data.Language;
 import com.fireflyest.essential.util.ChatUtils;
 import com.fireflyest.essential.util.TimeUtils;
+import com.fireflyest.essential.world.WorldManager;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+
+import java.util.Objects;
 
 /**
  * @author Fireflyest
@@ -39,7 +47,6 @@ public class PlayerEventListener implements Listener {
         // 替换自己的信息
         Player player = event.getPlayer();
         String name = player.getName();
-        event.getRecipients().remove(player);
         // 禁言否
         if(Temporary.isMute(name)){
             event.setCancelled(true);
@@ -55,34 +62,52 @@ public class PlayerEventListener implements Listener {
             for(String demo : msg){
                 if(!demo.contains("@"))continue;
                 String targetName = demo.substring(demo.indexOf("@")+1);
-                Player target = Bukkit.getPlayer(targetName);
+                Player target = Bukkit.getPlayerExact(targetName);
                 if(target == null)break;
                 event.setMessage(event.getMessage().replace("@" +targetName,  "§6@§b"+target.getName()+"§r"));
+                target.spigot().sendMessage(ChatMessageType.ACTION_BAR, new ComponentBuilder(name + "在聊天框呼叫你").create());
                 target.playSound(target.getLocation(), Sound.ENTITY_ARROW_HIT_PLAYER, 1, 1);
             }
         }
+        String worldName = player.getWorld().getName();
+        String worldTitle = WorldManager.getTitle(worldName);
         // 聊天格式
-        event.setFormat("%1$s §7▶§f %2$s");
-        // 发送给自己按钮
+        event.setFormat(worldTitle + "%1$s §7▶§f %2$s");
+        // 发送按钮
         String prefix = event.getPlayer().getDisplayName().replace(event.getPlayer().getName(), "");
-        ChatUtils.sendMessage(prefix, event.getPlayer().getName(), player, TimeUtils.getTime(), event.getMessage());
+        for (Player recipient : event.getRecipients()) {
+            ChatUtils.sendMessage(worldTitle, prefix, event.getPlayer().getName(), recipient, TimeUtils.getTime(), event.getMessage());
+        }
+        event.getRecipients().clear();
     }
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         Location loc = event.getEntity().getLocation();
         Temporary.putBack(event.getEntity().getName(), loc);
+
         String name = event.getEntity().getName();
-        String msg = event.getDeathMessage()+"";
-        msg = DeathMsgUtils.convertDeathMsg(name, msg, event.getEntity().getLastDamageCause().getCause());
+        String msg = event.getDeathMessage();
+        EntityDamageEvent entityDamageEvent = event.getEntity().getLastDamageCause();
+        if (entityDamageEvent != null) {
+            msg = DeathMsgUtils.convertDeathMsg(name, msg, entityDamageEvent.getCause());
+        }
         event.setDeathMessage("§6☠ §f"+ msg);
+        event.getEntity().setBedSpawnLocation(Objects.requireNonNull(Bukkit.getWorld(Config.MAIN_WORLD)).getSpawnLocation(), true);
+
         new BukkitRunnable() {
             @Override
             public void run() {
                 event.getEntity().spigot().respawn();
-                cancel();
             }
         }.runTask(EssentialBasic.getInstance());
+    }
+
+
+
+    @EventHandler
+    public void onPlayerSpawnLocation(PlayerSpawnLocationEvent event) {
+        event.setSpawnLocation(Objects.requireNonNull(Bukkit.getWorld(Config.MAIN_WORLD)).getSpawnLocation());
     }
 
     @EventHandler

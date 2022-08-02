@@ -1,5 +1,6 @@
 package com.fireflyest.basic.command;
 
+import com.fireflyest.basic.data.Temporary;
 import com.fireflyest.essential.data.Config;
 import com.fireflyest.essential.data.Language;
 import com.fireflyest.essential.util.TeleportUtils;
@@ -24,6 +25,7 @@ public class SpawnCommand  implements CommandExecutor{
 		if(args.length == 0) {
 			World w = Bukkit.getWorld(Config.MAIN_WORLD);
 			if (w != null) {
+				Temporary.putBack(player.getName(), player.getLocation());
 				TeleportUtils.teleportTo(player, w.getSpawnLocation(), player.hasPermission("essential.vip"));
 				player.sendMessage(Language.TELEPORT_POINT.replace("%point%", "spawn"));
 			}

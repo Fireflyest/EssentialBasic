@@ -28,7 +28,7 @@ public class RuntimeCommand  implements CommandExecutor{
 					sender.sendMessage(Language.TITLE+"§f已用 §3: " + used.substring(2, 4)+"."+used.substring(4, 6)+"%");
 					cancel();
 				}
-			}.runTaskAsynchronously(EssentialBasic.getInstance());
+			}.runTask(EssentialBasic.getInstance());
 		}else sender.sendMessage(Language.TITLE + "正确用法§3" + cmd.getUsage());
 		return true;
 	}

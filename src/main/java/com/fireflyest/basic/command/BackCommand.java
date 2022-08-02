@@ -3,6 +3,7 @@ package com.fireflyest.basic.command;
 import com.fireflyest.basic.data.Temporary;
 import com.fireflyest.essential.data.Language;
 import com.fireflyest.essential.util.TeleportUtils;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,7 +23,9 @@ public class BackCommand  implements CommandExecutor{
 		}
 
 		if(args.length == 0) {
-			TeleportUtils.teleportTo(player, Temporary.getBack(player.getName()), player.hasPermission("essential.vip"));
+			Location backLoc = Temporary.getBack(player.getName());
+			Temporary.putBack(player.getName(), player.getLocation());
+			TeleportUtils.teleportTo(player, backLoc, player.hasPermission("essential.vip"));
 			player.sendMessage(Language.TELEPORT_POINT.replace("%point%", "back"));
 		}else sender.sendMessage(Language.TITLE + "正确用法§3" + cmd.getUsage());
 		return true;

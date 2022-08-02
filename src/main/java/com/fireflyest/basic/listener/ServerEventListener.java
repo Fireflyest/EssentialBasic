@@ -14,16 +14,25 @@ import org.bukkit.event.server.ServerListPingEvent;
 public class ServerEventListener  implements Listener {
 
     private static long pingTime = 0;
-    
+    private static int amount = 0;
+
     @EventHandler
     public void onServerListPing(ServerListPingEvent event) {
         long now = TimeUtils.getDate();
-        if(now - pingTime < 500){
-            event.setMaxPlayers(1);
-            event.setMotd("...");
+        if((now - pingTime < 200)){
+            amount ++;
         }else {
+            amount = 0;
+        }
+
+        if(amount < 3){
+            // 正常
             event.setMaxPlayers(100);
             event.setMotd(Language.MOTD);
+        }else {
+            // 过于频繁
+            event.setMaxPlayers(1);
+            event.setMotd("请勿频繁刷新...");
         }
         pingTime = now;
     }

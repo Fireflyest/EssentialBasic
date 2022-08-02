@@ -1,6 +1,7 @@
 package com.fireflyest.basic.command;
 
 import com.fireflyest.basic.bean.Tpa;
+import com.fireflyest.basic.data.Temporary;
 import com.fireflyest.basic.util.TpaUtils;
 import com.fireflyest.essential.data.Language;
 import com.fireflyest.essential.util.TeleportUtils;
@@ -41,12 +42,14 @@ public class TpacceptCommand  implements CommandExecutor{
 				// 玩家下线
 				if (tper == null) return true;
 
-				if(!tpa.isTphere()){ // 请求传送 我->他人
-					player.sendMessage(Language.TELEPORT_POINT.replace("%point%", tper.getName()));
-					TeleportUtils.teleportTo(player, tper.getLocation(),  player.hasPermission("essential.vip"));
-				}else{	// 邀请传送 他人->我
+				if(!tpa.isTphere()){ // 请求传送 我->[他人]  -- player他人接受 我传送
 					tper.sendMessage(Language.TELEPORT_POINT.replace("%point%", player.getName()));
-					TeleportUtils.teleportTo(tper, player.getLocation(),  tper.hasPermission("essential.vip"));
+					Temporary.putBack(tper.getName(), tper.getLocation());
+					TeleportUtils.teleportTo(tper, player.getLocation(),  player.hasPermission("essential.vip"));
+				}else{	// 邀请传送 [他人]->我  -- player他人接受 他人传送
+					player.sendMessage(Language.TELEPORT_POINT.replace("%point%", tper.getName()));
+					Temporary.putBack(player.getName(), player.getLocation());
+					TeleportUtils.teleportTo(player, tper.getLocation(),  tper.hasPermission("essential.vip"));
 				}
 				TpaUtils.removeTpa(uuid);
 				return true;

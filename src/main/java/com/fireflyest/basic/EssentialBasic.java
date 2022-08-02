@@ -1,12 +1,17 @@
 package com.fireflyest.basic;
 
 import com.fireflyest.basic.bean.Home;
+import com.fireflyest.basic.bean.Sign;
 import com.fireflyest.basic.command.*;
+import com.fireflyest.basic.listener.BlockEventListener;
 import com.fireflyest.basic.listener.PlayerEventListener;
 import com.fireflyest.basic.listener.ServerEventListener;
 import com.fireflyest.essential.api.Data;
+import com.fireflyest.essential.api.Storage;
 import com.fireflyest.essential.bean.Point;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -28,6 +33,12 @@ public class EssentialBasic extends JavaPlugin {
 
     private static Data data;
 
+    public static Storage getStorage() {
+        return storage;
+    }
+
+    private static Storage storage;
+
     @Override
     public void onEnable() {
         plugin = this;
@@ -39,6 +50,11 @@ public class EssentialBasic extends JavaPlugin {
 
         this.getServer().getPluginManager().registerEvents( new PlayerEventListener(), this );
         this.getServer().getPluginManager().registerEvents( new ServerEventListener(), this );
+        this.getServer().getPluginManager().registerEvents( new BlockEventListener(), this );
+
+        for (Player onlinePlayer : getServer().getOnlinePlayers()) {
+            this.getServer().getPluginManager().callEvent(new PlayerJoinEvent(onlinePlayer, null));
+        }
     }
 
     @Override
@@ -46,15 +62,22 @@ public class EssentialBasic extends JavaPlugin {
     }
 
     private void setupData() {
-        RegisteredServiceProvider<Data> rsp = Bukkit.getServer().getServicesManager().getRegistration(Data.class);
-        if (rsp == null) {
+        RegisteredServiceProvider<Data> rspd = Bukkit.getServer().getServicesManager().getRegistration(Data.class);
+        if (rspd == null) {
             Bukkit.getLogger().warning("Data not found!");
             return;
         }
-        data = rsp.getProvider();
+        RegisteredServiceProvider<Storage> rsps = Bukkit.getServer().getServicesManager().getRegistration(Storage.class);
+        if (rsps == null) {
+            Bukkit.getLogger().warning("Storage not found!");
+            return;
+        }
+        data = rspd.getProvider();
+        storage = rsps.getProvider();
 
         data.createTable(Home.class);
         data.createTable(Point.class);
+        data.createTable(Sign.class);
     }
 
     private void setExecutor() {

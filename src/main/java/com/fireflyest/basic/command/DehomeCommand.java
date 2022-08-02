@@ -3,7 +3,6 @@ package com.fireflyest.basic.command;
 import com.fireflyest.basic.EssentialBasic;
 import com.fireflyest.basic.bean.Home;
 import com.fireflyest.essential.data.Language;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,7 +24,7 @@ public class DehomeCommand implements CommandExecutor{
 		// 获取所有家
 		List<Home> homes = EssentialBasic.getData().query(Home.class, "owner", player.getName());
 		if(args.length == 0) {
-			player.sendMessage(Language.TITLE + "指令需要加上家的名字，例如/sethome a");
+			player.sendMessage(Language.TITLE + "指令需要加上家的名字，例如/dehome a");
 			return true;
 		}else if(args.length == 1) {
 			// 存在就更新
